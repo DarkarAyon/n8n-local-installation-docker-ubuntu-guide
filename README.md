@@ -8,11 +8,13 @@ n8n is a powerful, open-source workflow automation platform designed to be highl
 3. System Prerequisites
 Before beginning the installation, ensure your Ubuntu system meets the following software requirements. These versions are verified for compatibility with this deployment workflow:
 
-      docker --version
+         docker --version
+  
   Docker: Version 28 or higher.
 
   
     docker compose version
+  
   Docker Compose: Version 2.35 or higher.
 If Docker is not yet installed on your system, please refer to official installation documentation or a standard Docker setup guide  or Docker installation Guide before proceeding.
 
