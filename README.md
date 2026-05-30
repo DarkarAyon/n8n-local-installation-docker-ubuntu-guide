@@ -21,24 +21,30 @@ If Docker is not yet installed on your system, please refer to official installa
 
 5. Server Preparation: Network Configuration
 Proper network configuration is critical for reliable remote access to your n8n instance.
-Identify IP Address: Determine the current IP address of your Ubuntu server using ip addr show.
+Identify IP Address: Determine the current IP address of your Ubuntu server using 
+
+                 ip addr show
 Static IP Recommendation: It is strongly recommended to configure a static IP address for your server. Using a static IP ensures consistent access and prevents connectivity breaks if the server’s IP changes following a system reboot.
 
-6. Data Persistence and Directory Structure
+7. Data Persistence and Directory Structure
 To ensure your workflows, settings, and encryption keys are not lost during container restarts or system migrations, you must implement a persistent file structure on the host machine.
 Execute the following command to create the necessary directory hierarchy:
-mkdir -p n8n-server/n8n-data
+
+         mkdir -p n8n-server/n8n-data
+
 The n8n-data subfolder will serve as the persistent volume where all n8n configurations and user data are stored.
 
-7. Permission Configuration
+8. Permission Configuration
 Docker containers often run services under specific non-root user IDs. For n8n to function correctly, the host directory must be writable by the container's internal user (typically UID 1000).
 Execute this command to set the correct ownership:
-sudo chown -R 1000:1000 n8n-server/n8n-data
+
+         sudo chown -R 1000:1000 n8n-server/n8n-data
 Failure to set these permissions will result in "Permission Denied" errors when the container attempts to write to the database or save configurations.
 
-8. Environment Configuration (.env)
+9. Environment Configuration (.env)
 The .env file centralizes configuration and secures sensitive credentials. Navigate to your n8n-server folder and create the file:
-nano .env
+
+         nano .env
 Paste the following template, replacing the placeholder values with your specific details:
 # Security: This password is used to encrypt your credentials in the database
 N8N_ENCRYPTION_PASSWORD=your_strong_encryption_key
@@ -50,10 +56,12 @@ WEBHOOK_URL=http://your_server_ip:5678/
 SERVER_IP_ADDRESS=your_server_ip
 N8N_PORT=5678
 Senior DevOps Security Note: After saving the file, restrict its permissions to ensure only the owner can read it, as it contains sensitive passwords:
-chmod 600 .env
+
+         chmod 600 .env
 7. Deployment Configuration (docker-compose.yml)
 The docker-compose.yml file acts as the orchestration blueprint. Create this file in the n8n-server directory:
-nano docker-compose.yml
+
+         nano docker-compose.yml
 Paste the following configuration, which utilizes the variables defined in your .env file:
 version: '3.8'
 
@@ -76,19 +84,25 @@ services:
 With the configurations in place, you are ready to launch the service.
 Ensure you are inside the n8n-server folder.
 Start n8n in detached mode:
+
+         docker compose up -d
 Heads Up: The initial startup may take several minutes as Docker downloads the n8n images and initializes the local environment.
 Verification: Confirm the container is running successfully with the following command:
 Look for a container with the name n8n-server and a status of "Up".
 
+         docker ps
+
 9. Managing the Service: Stopping n8n
 If you need to update configurations or stop the service for maintenance, use the following command:
-docker compose down
+
+         docker compose down
 This command stops and removes the container instance. However, your data is safe; because we configured a persistent volume in Section 4, all workflows and credentials remain intact in the n8n-data folder.
 
 10. Firewall Configuration (UFW)
 n8n listens on port 5678 by default. If your Ubuntu server has the Uncomplicated Firewall (UFW) enabled, you must explicitly allow traffic to this port.
 Execute the following:
-sudo ufw allow 5678
+
+         sudo ufw allow 5678
 If UFW is disabled, you may skip this step.
 
 11. Initial Access and Admin Account Setup
